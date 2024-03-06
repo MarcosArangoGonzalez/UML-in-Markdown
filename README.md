@@ -1,62 +1,80 @@
-How to Use UML Diagrams in GitHub Markdown Documents
-====
+@startuml
 
-[comment]: # ( Taken from: https://stackoverflow.com/a/32771815/1474291 )
-
-![Class Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/Zingam/Markdown-Document-UML-Use-Test/master/UML/Instance.puml)
-
-The Project Structure
-----
-
-```
- |
- +-- UML
- |    |
- |    +-- Instance.puml
- |         ...    
- |
- +-- README.md
-      ...
-        
-```
-
-The Source
-----
-
-* [UML/Instance.puml][1]
-
-[1]: https://github.com/Zingam/UML-in-Markdown/blob/master/UML/Instance.puml
-
-```
-Instance <|-- VulkanRootObject
-
-class Instance {
-    -- Contructors & destructors --
-    - Instance()
-    
-    -- Public methods --
-    + Initialize() : bool
+package "Sistema" {
+    class Aplicacion {
+        +buscarPelicula()
+        +verDetalles(pelicula: Pelicula)
+        +agregarAFavoritos(pelicula: Pelicula)
+        +calificarPelicula(pelicula: Pelicula, calificacion: int)
+        +comentarPelicula(pelicula: Pelicula, comentario: Comentario)
+        +compartirValoraciones(pelicula: Pelicula)
+        +añadirAmigo(usuario: Usuario)
+        +compartirPeliculasFavoritas(usuario: Usuario)
+    }
 }
-```
 
-The Link
-----
+package "Entorno" {
+    class Usuario {
+        +iniciarSesion()
+        +cerrarSesion()
+    }
 
-1. PlantUML's proxy:
-    * http://www.plantuml.com/plantuml/proxy?src=
-2. Document's GitHub raw URL:
-    * https://raw.githubusercontent.com/Zingam/Markdown-Document-UML-Use-Test/master/UML/Instance.puml
-3. Combined URL (combine the PlantUML's proxy URL and the document's GitHub raw URL):
-    * http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/Zingam/Markdown-Document-UML-Use-Test/master/UML/Instance.puml
+    class Pelicula {
+        -titulo: String
+        -año: int
+        -genero: String
+        -director: String
+        -sinopsis: String
+        -calificacionPromedio: double
+        +getInformacion()
+        +getCalificacionPromedio()
+    }
 
-The Markdown
-----
+    class ListaFavoritos {
+        -peliculasFavoritas: List<Pelicula>
+        +agregarPelicula()
+        +eliminarPelicula()
+    }
 
-```
-![Class Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/Zingam/Markdown-Document-UML-Use-Test/master/UML/Instance.puml)
-```
+    class Comentario {
+        -texto: String
+        -fecha: Date
+        +getComentario()
+        +getFecha()
+    }
 
-The Diagram
-----
+    class Plataforma {
+        -nombre: String
+        -tipo: String
+        +getInformacion()
+    }
+}
 
-![Class Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/Zingam/Markdown-Document-UML-Use-Test/master/UML/Instance.puml)
+package "Interfaz" {
+    class BuscadorPeliculas {
+        +buscarPelicula()
+    }
+
+    class DetallesPelicula {
+        +verDetalles()
+        +hacerComentario(comentario: Comentario)
+    }
+}
+
+Aplicacion "1" *-- "1..1" BuscadorPeliculas: usa
+Aplicacion "1" *-- "1..1" DetallesPelicula: usa
+Aplicacion "1" -- "1..*" Usuario: interactúa con
+Aplicacion "1" -- "1..*" Pelicula: interactúa con
+Aplicacion "1" *-- "1..*" ListaFavoritos: gestiona
+Aplicacion "1" *-- "1..*" Comentario: crea
+Aplicacion "1" *-- "1..*" Plataforma: utiliza
+
+Usuario "1" *-- "1" ListaFavoritos: tiene
+Usuario "1" *-- "0..*" Comentario: escribe
+
+Pelicula "1" *-- "0..*" Comentario: tiene
+
+Interfaz "1" *-- "1" Usuario: muestra
+Interfaz "1" *-- "1" Pelicula: muestra
+
+@enduml
